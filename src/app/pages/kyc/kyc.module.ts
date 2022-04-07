@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { KycRoutingModule } from './kyc-routing.module';
 import { KycComponent } from './kyc.component';
+import { CoreModule } from "../../core/core.module";
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import { KycComponent } from './kyc.component';
   ],
   imports: [
     CommonModule,
+    CoreModule,
     KycRoutingModule
   ]
 })
