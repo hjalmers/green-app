@@ -33,6 +33,67 @@
           </ng-container>
         </span>
       </div>
+      <!-- Form group for last name-->
+      <div *ngIf="kycFormGroup.get('lastName') as lastName" class="form-group">
+        <label for="lastName_input">Last name</label>
+        <input id="lastName_input"
+               formControlName="lastName"
+               type="text"
+               aria-describedby="lastName_info"
+               [class.is-valid]="kycForm['submitted'] && lastName.valid"
+               [class.is-invalid]="kycForm['submitted'] && lastName.invalid"
+        />
+        <span class="form-info" id="lastName_info">
+          <!-- Hint text when not submitted -->
+          <ng-container *ngIf="!kycForm['submitted']">Enter last name</ng-container>
+          <ng-container *ngIf="kycForm['submitted']">
+            <!-- Text when submitted and valid -->
+            <ng-container *ngIf="lastName.valid">Last name looks correct</ng-container>
+            <!-- Text when form control contains one or more errors -->
+            <ng-container *ngIf="lastName.errors as errors">
+              <!-- Text for each error (only one will be displayed at a time) -->
+              <ng-container *ngIf="errors['required']">Enter your last name</ng-container>
+            </ng-container>
+          </ng-container>
+        </span>
+      </div>
+      <!-- Form group for occupation -->
+      <div *ngIf="kycFormGroup.get('occupation') as occupation" class="form-group">
+        <ngg-dropdown formControlName="occupation"
+                      text="Select occupation"
+                      [options]="occupations$ | async"
+                      label="Occupation"
+                      [valid]="occupation.valid && kycForm.submitted"
+                      [invalid]="occupation.invalid && kycForm.submitted"
+        >
+          <!-- Info text when not submitted -->
+          <ng-container data-form-info *ngIf="!kycForm['submitted']">Select occupation</ng-container>
+          <!-- Info text when submitted -->
+          <ng-container data-form-info *ngIf="kycForm['submitted']">
+            <!-- Text when form control contains one or more errors -->
+            <ng-container *ngIf="occupation.errors as errors">
+              <!-- Text for each error (only one will be displayed at a time) -->
+              <ng-container *ngIf="errors['required']">Select your occupation</ng-container>
+            </ng-container>
+          </ng-container>
+        </ngg-dropdown>
+      </div>
     </form>
   </main>
 </div>
+<!-- FOR DEMO & DEBUG PURPOSE ONLY -->
+<code>
+  <h5 class="mb-0">Form data</h5>
+  <div>
+    Submitted: {{kycForm?.submitted}}
+    Invalid: {{kycFormGroup?.invalid}}
+  </div>
+  <h5 class="mb-0">Values</h5>
+  <div>
+    {{kycFormGroup?.value | json}}
+  </div>
+  <h5 class="mb-0">Errors</h5>
+  <div *ngFor="let f of kycFormGroup?.controls | keyvalue">
+    {{f.key}}:{{f.value.errors | json}}
+  </div>
+</code>
