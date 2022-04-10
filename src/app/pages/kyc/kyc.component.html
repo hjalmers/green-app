@@ -3,10 +3,11 @@
     <h2>KYC Form</h2>
   </header>
   <main>
-    <form *ngIf="kycFormGroup" 
+    <form *ngIf="kycFormGroup"
           #kycForm="ngForm"
           [formGroup]="kycFormGroup"
           id="kycForm"
+          (submit)="save()"
     >
       <!-- Form group for first name-->
       <div *ngIf="kycFormGroup.get('firstName') as firstName" class="form-group">
@@ -79,7 +80,19 @@
         </ngg-dropdown>
       </div>
     </form>
+    <div role="alert" class="danger" *ngIf="kycForm?.invalid && kycForm?.submitted">
+      <main>
+        <h3>Error!</h3>
+        <p>
+          The form contains one or more errors, please correct them before proceeding.
+        </p>
+      </main>
+    </div>
   </main>
+  <footer>
+    <button type="reset" form="kycForm">Reset</button>
+    <button type="submit" form="kycForm" [disabled]="kycForm?.submitted && kycFormGroup?.invalid">Save</button>
+  </footer>
 </div>
 <!-- FOR DEMO & DEBUG PURPOSE ONLY -->
 <code>
@@ -97,3 +110,4 @@
     {{f.key}}:{{f.value.errors | json}}
   </div>
 </code>
+

@@ -41,4 +41,7 @@ export class KycComponent {
     });
   }
 
+  save() {
+    console.log(this.kycFormGroup?.value)
+  }
 }
