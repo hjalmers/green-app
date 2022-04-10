@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { KycRoutingModule } from './kyc-routing.module';
 import { KycComponent } from './kyc.component';
 import { CoreModule } from "../../core/core.module";
+import { SharedModule } from "../../shared/shared.module";
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { CoreModule } from "../../core/core.module";
   imports: [
     CommonModule,
     CoreModule,
+    SharedModule,
     KycRoutingModule
   ]
 })
