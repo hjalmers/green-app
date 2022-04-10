@@ -1,1 +1,38 @@
-<p>kyc works!</p>
+<div class="card">
+  <header>
+    <h2>KYC Form</h2>
+  </header>
+  <main>
+    <form *ngIf="kycFormGroup" 
+          #kycForm="ngForm"
+          [formGroup]="kycFormGroup"
+          id="kycForm"
+    >
+      <!-- Form group for first name-->
+      <div *ngIf="kycFormGroup.get('firstName') as firstName" class="form-group">
+        <label for="firstName_input">First name</label>
+        <input id="firstName_input"
+               formControlName="firstName"
+               type="text"
+               aria-describedby="firstName_info"
+               [class.is-valid]="kycForm['submitted'] && firstName.valid"
+               [class.is-invalid]="kycForm['submitted'] && firstName.invalid"
+        />
+        <span class="form-info" id="firstName_info">
+          <!-- Hint text when not submitted -->
+          <ng-container *ngIf="!kycForm['submitted']">Enter first name</ng-container>
+          <ng-container *ngIf="kycForm['submitted']">
+            <!-- Text when submitted and valid -->
+            <ng-container *ngIf="firstName.valid">First name looks correct</ng-container>
+            <!-- Text when form control contains one or more errors -->
+            <ng-container *ngIf="firstName.errors as errors">
+              <!-- Text for each error (only one will be displayed at a time) -->
+              <ng-container *ngIf="errors['required']">Enter your first name</ng-container>
+              <ng-container *ngIf="errors['minlength'] as minLength">Enter at least {{minLength?.requiredLength}} characters</ng-container>
+            </ng-container>
+          </ng-container>
+        </span>
+      </div>
+    </form>
+  </main>
+</div>
