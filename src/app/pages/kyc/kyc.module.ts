@@ -5,6 +5,7 @@ import { KycRoutingModule } from './kyc-routing.module';
 import { KycComponent } from './kyc.component';
 import { CoreModule } from "../../core/core.module";
 import { SharedModule } from "../../shared/shared.module";
+import { KycFormModule } from "../../shared/features/kyc-form/kyc-form.module";
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { SharedModule } from "../../shared/shared.module";
     CommonModule,
     CoreModule,
     SharedModule,
+    KycFormModule,
     KycRoutingModule
   ]
 })

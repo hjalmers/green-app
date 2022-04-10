@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {Observable, of} from "rxjs";
+import {KycFormService} from "../../shared/features/kyc-form/services/kyc-form.service";
 
 @Component({
   selector: 'app-kyc',
@@ -29,7 +30,7 @@ export class KycComponent {
       value: 'self_employed'
     }]);
 
-  constructor(private _fb: FormBuilder) {
+  constructor(private _fb: FormBuilder, private kycFormService: KycFormService) {
     this.setupForm();
   }
 
@@ -42,6 +43,15 @@ export class KycComponent {
   }
 
   save() {
-    console.log(this.kycFormGroup?.value)
+    // only submit data if it's valid
+    if(this.kycFormGroup?.valid) {
+      this.kycFormService
+        .save(this.kycFormGroup?.value)
+        .subscribe(state => {
+          console.log('Success! Form data has been saved!', state)
+        }, error => {
+          console.log('Error! Form data was not saved!', error)
+        })
+    }
   }
 }
