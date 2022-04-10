@@ -1,7 +1,9 @@
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {Observable, of} from "rxjs";
+import {Observable, of, take} from "rxjs";
 import {KycFormService} from "../../shared/features/kyc-form/services/kyc-form.service";
+import {KycState} from "../../shared/features/kyc-form/state/kyc.service";
+import {Kyc} from "../../shared/features/kyc-form/interfaces/kyc";
 
 @Component({
   selector: 'app-kyc',
@@ -30,16 +32,24 @@ export class KycComponent {
       value: 'self_employed'
     }]);
 
-  constructor(private _fb: FormBuilder, private kycFormService: KycFormService) {
-    this.setupForm();
+  constructor(private _fb: FormBuilder,
+              private kycFormService: KycFormService,
+              private kycState: KycState,
+              private _cdr: ChangeDetectorRef) {
+    this.kycState.get()
+      .pipe(
+        take(1)
+      ).subscribe(state => this.setupForm(state))
   }
 
-  setupForm() {
+  setupForm(state: Kyc) {
     this.kycFormGroup = this._fb.group({
-      firstName: ['', [ Validators.required, Validators.minLength(2) ]],
-      lastName: ['', [ Validators.required ]],
-      occupation: ['', [ Validators.required ]],
+      firstName: [state.firstName || '', [ Validators.required, Validators.minLength(2) ]],
+      lastName: [state.lastName || '', [ Validators.required ]],
+      occupation: [state.occupation || '', [ Validators.required ]],
     });
+    // since we use OnPush - mark the view as changed so that it can be checked again
+    this._cdr.markForCheck();
   }
 
   save() {
