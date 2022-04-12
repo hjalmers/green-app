@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { KycFormModule } from "../kyc-form.module";
 import { HttpClient } from "@angular/common/http";
-import { tap } from "rxjs";
+import { catchError, tap } from "rxjs";
 import { KycState } from "../state/kyc.service";
 import { Kyc } from "../interfaces/kyc";
 
@@ -20,10 +20,16 @@ export class KycFormService {
    * @returns updated state as observable
    */
   save(state: Kyc) {
+    this.state.setLoading();
     return this.http.post<Kyc>('/api/kyc', state).pipe(
       tap(res => {
         // update state
+        this.state.setLoading(false);
         this.state.set(res);
+      }),
+      catchError(err => {
+        this.state.setLoading(false);
+        throw err;
       })
     )
   }
@@ -32,10 +38,16 @@ export class KycFormService {
    * @returns state as observable
    */
   get() {
+    this.state.setLoading();
     return this.http.get<Kyc>('/api/kyc').pipe(
       tap(res => {
         // update state
+        this.state.setLoading(false);
         this.state.set(res)
+      }),
+      catchError(err => {
+        this.state.setLoading(false);
+        throw err;
       })
     )
   }

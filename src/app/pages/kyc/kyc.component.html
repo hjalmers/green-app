@@ -3,7 +3,7 @@
     <h2>KYC Form</h2>
   </header>
   <main>
-    <form *ngIf="kycFormGroup"
+    <form *ngIf="kycFormGroup; else skeletonLoader"
           #kycForm="ngForm"
           [formGroup]="kycFormGroup"
           id="kycForm"
@@ -91,9 +91,13 @@
   </main>
   <footer>
     <button type="reset" form="kycForm">Reset</button>
-    <button type="submit" form="kycForm" [disabled]="kycForm?.submitted && kycFormGroup?.invalid">Save</button>
+    <button type="submit" form="kycForm" [disabled]="kycForm?.submitted && kycFormGroup?.invalid || (isLoading$ | async)">Save</button>
   </footer>
 </div>
+<ng-template #skeletonLoader>
+  <!-- TODO: add skeleton loader -->
+  <div>Loading...</div>
+</ng-template>
 <!-- FOR DEMO & DEBUG PURPOSE ONLY -->
 <code>
   <h5 class="mb-0">Form data</h5>

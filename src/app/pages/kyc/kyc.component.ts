@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {Observable, of, take} from "rxjs";
+import {Observable, of, Subject, take, takeUntil} from "rxjs";
 import {KycFormService} from "../../shared/features/kyc-form/services/kyc-form.service";
 import {KycState} from "../../shared/features/kyc-form/state/kyc.service";
 import {Kyc} from "../../shared/features/kyc-form/interfaces/kyc";
@@ -11,8 +11,9 @@ import {Kyc} from "../../shared/features/kyc-form/interfaces/kyc";
   styleUrls: ['./kyc.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class KycComponent {
+export class KycComponent implements OnDestroy {
 
+  unsubscribe$ = new Subject();
   @ViewChild('kycForm') kycForm?: FormGroupDirective;
 
   kycFormGroup?: FormGroup;
@@ -31,6 +32,8 @@ export class KycComponent {
       key: 'Self employed',
       value: 'self_employed'
     }]);
+
+  isLoading$ = this.kycState.isLoading();
 
   constructor(private _fb: FormBuilder,
               private kycFormService: KycFormService,
@@ -57,11 +60,17 @@ export class KycComponent {
     if(this.kycFormGroup?.valid) {
       this.kycFormService
         .save(this.kycFormGroup?.value)
+        .pipe(takeUntil(this.unsubscribe$))
         .subscribe(state => {
           console.log('Success! Form data has been saved!', state)
         }, error => {
           console.log('Error! Form data was not saved!', error)
         })
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 }
